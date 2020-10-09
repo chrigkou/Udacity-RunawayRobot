@@ -85,7 +85,6 @@ class ExtendedKalman():
         new_h = h + r
         new_r = r
         new_d = d
-
         self.x = matrix([
             [new_x], [new_y], [new_h], [new_r], [new_d]])
         self.p = self.f * self.p * self.f.transpose()  # + self.q
@@ -108,3 +107,16 @@ class ExtendedKalman():
         i.identity(5)
         self.p = (i - k * self.h) * self.p
 
+    # predict the next robot position without changing the matrixes
+    def estimate(self, x, y):
+
+        h = self.x.value[2][0]
+        r = self.x.value[3][0]
+        d = self.x.value[4][0]
+
+        new_x = x + d * np.cos(h + r)
+        new_y = y + d * np.sin(h + r)
+
+        pred_x = float(new_x)
+        pred_y = float(new_y)
+        return pred_x, pred_y
